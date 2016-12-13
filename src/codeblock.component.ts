@@ -1,24 +1,11 @@
 import {
-  Component,
-  AfterViewChecked,
-  AfterContentChecked,
-  ElementRef,
-  EventEmitter,
-  Input,
-  Output,
-  ViewEncapsulation,
-  ViewChild
-} from 'angular2/core';
+  Component, AfterViewChecked, AfterContentChecked, ElementRef, Input,
+  ViewEncapsulation, ViewChild
+} from '@angular/core';
+import { CodeRendererComponent } from './code-renderer.component';
 
-declare var Prism: any;
-import 'prismjs/prism';
-
-import {CodeRenderer} from './code-renderer.component';
 import {
-  OnSourceChanged,
-  OnSourceError,
-  OnSourceReceived,
-  Response
+  OnSourceChanged, OnSourceError, OnSourceReceived, Response
 } from 'ng2-src-directive/src';
 
 @Component({
@@ -38,38 +25,34 @@ import {
   `,
 
   // CSS injected in build step
-  styles: [`{{CSS}}`],
+  // styles: [`{{CSS}}`],
 
   // necessary to make component styles apply because unique ng attributes
   // aren't applied to elements added by Prism.highlight
-  encapsulation: ViewEncapsulation.None,
-
-  directives: [CodeRenderer]
+  encapsulation: ViewEncapsulation.None
 })
-export class CodeblockComponent implements
-                                AfterViewChecked,
-                                AfterContentChecked,
-                                OnSourceChanged,
-                                OnSourceError,
-                                OnSourceReceived {
+export class CodeblockComponent implements AfterViewChecked,
+  AfterContentChecked,
+  OnSourceChanged,
+  OnSourceError,
+  OnSourceReceived {
 
   /** ViewChildren **/
 
   /**
    * The container for the original content of the codeblock. Hidden from view.
    */
-  @ViewChild('contentEl') contentEl;
+  @ViewChild('contentEl') contentEl:any;
 
   /**
    * Component that shows the highlighted code.
    */
-  @ViewChild(CodeRenderer) codeRenderer;
-
+  @ViewChild(CodeRendererComponent) codeRenderer:any;
 
   /** Lifecycle Events **/
 
-  constructor(
-    private _elementRef: ElementRef) { }
+  private _elementRef: ElementRef;
+  constructor(_elementRef: ElementRef) { }
 
   /**
    * Update code when content changes
@@ -87,7 +70,6 @@ export class CodeblockComponent implements
       this.codeRenderer.render();
     }
   }
-
 
   /** Attributes **/
 
@@ -111,7 +93,6 @@ export class CodeblockComponent implements
     return this.contentEl ? this.contentEl.nativeElement.innerHTML : '';
   }
 
-
   /**
    * The code to display in the codeblock. Automatically set to this.content
    * unless a src attribute is present.
@@ -127,7 +108,6 @@ export class CodeblockComponent implements
   get code(): string {
     return this._code;
   }
-
 
   /** Inputs **/
 
@@ -168,9 +148,8 @@ export class CodeblockComponent implements
    * @return {boolean} - whether or not lineNumbers should be displayed
    */
   shouldDisplayLineNumbers(): boolean {
-    return this.lineNumbers && ! this._showingMessage;
+    return this.lineNumbers && !this._showingMessage;
   }
-
 
   /**
    * Set the language used to highlight the code within the codeblock.
@@ -186,15 +165,14 @@ export class CodeblockComponent implements
    */
   @Input() set language(lang: string) {
     if (this.isShell()) { return; }
-    this._languageSet = lang && lang.length > 0 ? true : false;
-    this._language = Prism.languages[lang] ? lang : undefined;
+    this._languageSet = !!(lang && lang.length > 0);
+    this._language = (Prism.languages as any)[lang] ? lang : undefined;
     this._changed = true;
   }
 
   get language() {
     return this._showingMessage ? undefined : this._language;
   }
-
 
   /**
    * The theme for styling the codeblock. All prismjs themes are available.
@@ -233,15 +211,14 @@ export class CodeblockComponent implements
     "twilight"
   ];
 
-  DEFAULT_THEME       = "standard";
+  DEFAULT_THEME = "standard";
   DEFAULT_SHELL_THEME = "okaidia";
 
-
   /**
-   * The code has been loaded from a remote file. The file must have an extension
-   * to be loaded. Error/warning messages are displayed within the codeblock. The
-   * language is determined from the file extension, unless a language is
-   * provided. Import and use the Source directive to apply it.
+   * The code has been loaded from a remote file. The file must have an
+   * extension to be loaded. Error/warning messages are displayed within the
+   * codeblock. The language is determined from the file extension, unless a
+   * language is provided. Import and use the Source directive to apply it.
    *
    * Null means no source has been loaded.
    *
@@ -270,7 +247,7 @@ export class CodeblockComponent implements
    */
   sourceReceived(res: Response) {
     let ext = res.url.match(/\.(\w+)$/)[1];
-    let fileLang = CodeblockComponent.EXTENSION_MAP[ext] || ext;
+    let fileLang = (CodeblockComponent.EXTENSION_MAP as any)[ext] || ext;
     let text = res.text();
     if (!this._languageSet) {
       this._language = fileLang;
@@ -288,7 +265,7 @@ export class CodeblockComponent implements
    *
    * @param  {Error} error
    */
-  sourceError(error) {
+  sourceError(error:Error):void {
     this._sourced = false;
     this.message(error.message ? error.message : 'An error occured.');
   }
@@ -308,7 +285,6 @@ export class CodeblockComponent implements
     'ps1': 'powershell',
     'psm1': 'powershell'
   };
-
 
   /**
    * Turn this codeblock into a shell display with a prompt.
@@ -354,7 +330,7 @@ export class CodeblockComponent implements
   /**
    * Possible shell types
    */
-  static SHELL_TYPES: Array<string>  = ['bash', 'powershell'];
+  static SHELL_TYPES: Array<string> = ['bash', 'powershell'];
 
   /**
    * The prompt to display in a shell codeblock. Default is $.
@@ -407,14 +383,13 @@ export class CodeblockComponent implements
    */
   @Input() set output(lines: string) {
     console.warn("DEPRECATION WARNING: The CodeblockComponent Input property 'output'" +
-            " is no longer supported and will be removed in a future release. Use 'outputLines'");
+      " is no longer supported and will be removed in a future release. Use 'outputLines'");
     this.outputLines = lines;
   }
 
   /** Truncation **/
   // @Input() truncationSize: number = 100000;
   // @Input() truncationMessage: string = "\n--- File Truncated ---\n";
-
 
   /** Methods **/
 
@@ -448,7 +423,6 @@ export class CodeblockComponent implements
   bind(text: string): string {
     return `{{${text}}}`;
   }
-
 
   /************ Private **************/
 

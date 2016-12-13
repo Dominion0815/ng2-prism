@@ -1,24 +1,10 @@
 import './spec-setup';
 import {
-  expect,
-  it, iit, xit,
-  describe,
-  inject,
-  injectAsync,
-  fakeAsync,
-  TestComponentBuilder,
-  beforeEach,
-  beforeEachProviders,
-} from 'angular2/testing';
-import {
-  provide,
-  Injectable,
-  Renderer,
-  Component
-} from 'angular2/core';
-import {CodeRenderer} from '../src/code-renderer.component';
-
-declare var Prism: any;
+  expect, it, iit, describe, inject, injectAsync, TestComponentBuilder,
+  beforeEach, beforeEachProviders
+} from '@angular/core/testing';
+import { provide, Injectable, Renderer, Component } from 'angular2/core';
+import { CodeRendererComponent } from '../src/code-renderer.component';
 
 export function main() {
 
@@ -27,7 +13,7 @@ export function main() {
 
     beforeEachProviders(() => [
       TestComponentBuilder,
-      CodeRenderer,
+      CodeRendererComponent,
       Renderer
     ]);
 
@@ -38,105 +24,117 @@ export function main() {
     describe('Rendering', () => {
 
       it('sets the innerHTML to the code', done => {
-        tcb.createAsync(CodeRenderer).then(fixture => {
-          let codeRenderer = fixture.componentInstance;
-          let el = fixture.nativeElement;
-          codeRenderer.code = "Hello World";
-          spyOn(Prism, 'highlightElement');
-
-          fixture.detectChanges();
-
-          codeRenderer.render();
-
-          expect(el.querySelector('pre code').innerHTML).toBe('Hello World');
-          done();
-        })
-        .catch(e => done.fail(e));
-      });
-
-      it('uses Prism to highlight the code', done => {
-        tcb.createAsync(CodeRenderer).then(fixture => {
-          let codeRenderer = fixture.componentInstance;
-          let el = fixture.nativeElement;
-          codeRenderer.code = "Hello World";
-          spyOn(Prism, 'highlightElement');
-
-          fixture.detectChanges();
-
-          codeRenderer.render();
-
-          expect(Prism.highlightElement).toHaveBeenCalledWith(
-            el.querySelector('pre code'), false, null);
-          done();
-        })
-        .catch(e => done.fail(e));
-      });
-
-      describe('Markup', () => {
-
-        it('handles inline tags', done => {
-          tcb.createAsync(CodeRenderer).then(fixture => {
+        tcb.createAsync(CodeRendererComponent)
+          .then(fixture => {
             let codeRenderer = fixture.componentInstance;
             let el = fixture.nativeElement;
-            codeRenderer.language = 'markup';
-            codeRenderer.code = '<div></div>';
+            codeRenderer.code = "Hello World";
             spyOn(Prism, 'highlightElement');
 
             fixture.detectChanges();
 
             codeRenderer.render();
 
-            expect(el.querySelector('pre code').textContent).toBe('<div></div>');
-
+            expect(el.querySelector('pre code').innerHTML)
+              .toBe('Hello World');
             done();
           })
           .catch(e => done.fail(e));
+      });
+
+      it('uses Prism to highlight the code', done => {
+        tcb.createAsync(CodeRendererComponent)
+          .then(fixture => {
+            let codeRenderer = fixture.componentInstance;
+            let el = fixture.nativeElement;
+            codeRenderer.code = "Hello World";
+            spyOn(Prism, 'highlightElement');
+
+            fixture.detectChanges();
+
+            codeRenderer.render();
+
+            expect(Prism.highlightElement)
+              .toHaveBeenCalledWith(
+                el.querySelector('pre code'), false, null);
+            done();
+          })
+          .catch(e => done.fail(e));
+      });
+
+      describe('Markup', () => {
+
+        it('handles inline tags', done => {
+          tcb.createAsync(CodeRendererComponent)
+            .then(fixture => {
+              let codeRenderer = fixture.componentInstance;
+              let el = fixture.nativeElement;
+              codeRenderer.language = 'markup';
+              codeRenderer.code = '<div></div>';
+              spyOn(Prism, 'highlightElement');
+
+              fixture.detectChanges();
+
+              codeRenderer.render();
+
+              expect(el.querySelector('pre code').textContent)
+                .toBe('<div></div>');
+
+              done();
+            })
+            .catch(e => done.fail(e));
         });
 
         it('handles multiline tags', done => {
-          tcb.createAsync(CodeRenderer).then(fixture => {
-            let codeRenderer = fixture.componentInstance;
-            let el = fixture.nativeElement;
-            codeRenderer.language = 'markup';
-            let list = `
+          tcb.createAsync(CodeRendererComponent)
+            .then(fixture => {
+              let codeRenderer = fixture.componentInstance;
+              let el = fixture.nativeElement;
+              codeRenderer.language = 'markup';
+              let list = `
               <ul class="list">
                 <li>A</li>
                 <li>B</li>
                 <li>C</li>
               </div>
             `;
-            codeRenderer.code = list;
-            spyOn(Prism, 'highlightElement');
+              codeRenderer.code = list;
+              spyOn(Prism, 'highlightElement');
 
-            fixture.detectChanges();
+              fixture.detectChanges();
 
-            codeRenderer.render();
+              codeRenderer.render();
 
-            let text = el.querySelector('pre code').textContent.trim();
-            expect(text).toBe(list.trim());
+              let text = el.querySelector('pre code')
+                .textContent
+                .trim();
+              expect(text)
+                .toBe(list.trim());
 
-            done();
-          })
-          .catch(e => done.fail(e));
+              done();
+            })
+            .catch(e => done.fail(e));
         });
 
         it('is processed in Markdown', done => {
-          tcb.createAsync(CodeRenderer).then(fixture => {
-            let codeRenderer = fixture.componentInstance;
-            let el = fixture.nativeElement;
-            codeRenderer.language = 'markdown';
-            codeRenderer.code = '<div></div>';
-            spyOn(Prism, 'highlightElement');
+          tcb.createAsync(CodeRendererComponent)
+            .then(fixture => {
+              let codeRenderer = fixture.componentInstance;
+              let el = fixture.nativeElement;
+              codeRenderer.language = 'markdown';
+              codeRenderer.code = '<div></div>';
+              spyOn(Prism, 'highlightElement');
 
-            fixture.detectChanges();
+              fixture.detectChanges();
 
-            codeRenderer.render();
+              codeRenderer.render();
 
-            expect(el.querySelector('pre code').textContent).toBe('<div></div>');
+              expect(el.querySelector('pre code').textContent)
+                .toBe('<div></div>');
 
-            done();
-          })
-          .catch(e => done.fail(e));
+              done();
+            })
+            .catch(e => done.fail(e));
         });
 
         describe('Angular templates', () => {
@@ -151,39 +149,45 @@ export function main() {
                 </ul>
               `
             })
-            class ForComponent {}
+            class ForComponent {
+            }
 
             it('removes template tags', done => {
-              tcb.createAsync(CodeRenderer).then(fixture => {
-                let codeRenderer = fixture.componentInstance;
-                let el = fixture.nativeElement;
-                codeRenderer.language = 'markup';
+              tcb.createAsync(CodeRendererComponent)
+                .then(fixture => {
+                  let codeRenderer = fixture.componentInstance;
+                  let el = fixture.nativeElement;
+                  codeRenderer.language = 'markup';
 
-                tcb.createAsync(ForComponent).then(forFixture => {
-                  forFixture.detectChanges();
+                  tcb.createAsync(ForComponent)
+                    .then(forFixture => {
+                      forFixture.detectChanges();
 
-                  codeRenderer.code = forFixture.nativeElement.innerHTML;
-                  spyOn(Prism, 'highlightElement');
+                      codeRenderer.code = forFixture.nativeElement.innerHTML;
+                      spyOn(Prism, 'highlightElement');
 
-                  fixture.detectChanges();
+                      fixture.detectChanges();
 
-                  codeRenderer.render();
+                      codeRenderer.render();
 
-                  let text = el.querySelector('pre code').textContent.replace(/\s+/g, '');
-                  let processed = `
+                      let text = el.querySelector('pre code')
+                        .textContent
+                        .replace(/\s+/g, '');
+                      let processed = `
                     <ul>
                       <li>Item 1</li>
                       <li>Item 2</li>
                       <li>Item 3</li>
                     </ul>
                   `;
-                  expect(text).toBe(processed.replace(/\s+/g, ''));
+                      expect(text)
+                        .toBe(processed.replace(/\s+/g, ''));
 
-                  done();
+                      done();
 
-                });
-              })
-              .catch(e => done.fail(e));
+                    });
+                })
+                .catch(e => done.fail(e));
             });
 
           });
@@ -200,35 +204,41 @@ export function main() {
               </div>
               `
             })
-            class SwitchComponent {}
+            class SwitchComponent {
+            }
 
             it('removes template tags', done => {
-              tcb.createAsync(CodeRenderer).then(fixture => {
-                let codeRenderer = fixture.componentInstance;
-                let el = fixture.nativeElement;
-                codeRenderer.language = 'markup';
+              tcb.createAsync(CodeRendererComponent)
+                .then(fixture => {
+                  let codeRenderer = fixture.componentInstance;
+                  let el = fixture.nativeElement;
+                  codeRenderer.language = 'markup';
 
-                tcb.createAsync(SwitchComponent).then(switchFixture => {
-                  switchFixture.detectChanges();
+                  tcb.createAsync(SwitchComponent)
+                    .then(switchFixture => {
+                      switchFixture.detectChanges();
 
-                  codeRenderer.code = switchFixture.nativeElement.innerHTML;
-                  spyOn(Prism, 'highlightElement');
+                      codeRenderer.code = switchFixture.nativeElement.innerHTML;
+                      spyOn(Prism, 'highlightElement');
 
-                  fixture.detectChanges();
+                      fixture.detectChanges();
 
-                  codeRenderer.render();
+                      codeRenderer.render();
 
-                  let text = el.querySelector('pre code').textContent.replace(/\s+/g, '');
-                  let processed = `
+                      let text = el.querySelector('pre code')
+                        .textContent
+                        .replace(/\s+/g, '');
+                      let processed = `
                     <div>C</div>
                   `;
-                  expect(text).toBe(processed.replace(/\s+/g, ''));
+                      expect(text)
+                        .toBe(processed.replace(/\s+/g, ''));
 
-                  done();
+                      done();
 
-                });
-              })
-              .catch(e => done.fail(e));
+                    });
+                })
+                .catch(e => done.fail(e));
             });
 
           });
@@ -242,62 +252,68 @@ export function main() {
                 <div *ngIf="true">var y = 4;</div>
               `
             })
-            class IfComponent {}
+            class IfComponent {
+            }
 
             it('removes template tags', done => {
-              tcb.createAsync(CodeRenderer).then(fixture => {
-                let codeRenderer = fixture.componentInstance;
-                let el = fixture.nativeElement;
-                codeRenderer.language = 'markup';
+              tcb.createAsync(CodeRendererComponent)
+                .then(fixture => {
+                  let codeRenderer = fixture.componentInstance;
+                  let el = fixture.nativeElement;
+                  codeRenderer.language = 'markup';
 
-                tcb.createAsync(IfComponent).then(ifFixture => {
-                  ifFixture.detectChanges();
+                  tcb.createAsync(IfComponent)
+                    .then(ifFixture => {
+                      ifFixture.detectChanges();
 
-                  codeRenderer.code = ifFixture.nativeElement.innerHTML;
-                  spyOn(Prism, 'highlightElement');
+                      codeRenderer.code = ifFixture.nativeElement.innerHTML;
+                      spyOn(Prism, 'highlightElement');
 
-                  fixture.detectChanges();
+                      fixture.detectChanges();
 
-                  codeRenderer.render();
+                      codeRenderer.render();
 
-                  let text = el.querySelector('pre code').textContent.trim();
-                  expect(text).toBe('<div>var y = 4;</div>');
+                      let text = el.querySelector('pre code')
+                        .textContent
+                        .trim();
+                      expect(text)
+                        .toBe('<div>var y = 4;</div>');
 
-                  done();
+                      done();
 
-                });
-              })
-              .catch(e => done.fail(e));
+                    });
+                })
+                .catch(e => done.fail(e));
             });
 
           });
 
-
         });
 
       });
-
 
     });
 
     describe("Empty", () => {
 
       it('clears the code', done => {
-        tcb.createAsync(CodeRenderer).then(fixture => {
-          let codeRenderer = fixture.componentInstance;
-          let el = fixture.nativeElement;
-          codeRenderer.code = "Hello World";
-          spyOn(Prism, 'highlightElement');
+        tcb.createAsync(CodeRendererComponent)
+          .then(fixture => {
+            let codeRenderer = fixture.componentInstance;
+            let el = fixture.nativeElement;
+            codeRenderer.code = "Hello World";
+            spyOn(Prism, 'highlightElement');
 
-          fixture.detectChanges();
+            fixture.detectChanges();
 
-          codeRenderer.render();
-          codeRenderer.empty();
+            codeRenderer.render();
+            codeRenderer.empty();
 
-          expect(el.querySelector('pre').innerHTML).toBe('');
-          done();
-        })
-        .catch(e => done.fail(e));
+            expect(el.querySelector('pre').innerHTML)
+              .toBe('');
+            done();
+          })
+          .catch(e => done.fail(e));
       });
 
     });
@@ -305,37 +321,43 @@ export function main() {
     describe('Inputs', () => {
 
       it('sets the prompt as a data attribute', done => {
-        tcb.createAsync(CodeRenderer).then(fixture => {
-          let codeRenderer = fixture.componentInstance;
-          let el = fixture.nativeElement;
-          codeRenderer.prompt = "&";
-          spyOn(Prism, 'highlightElement');
+        tcb.createAsync(CodeRendererComponent)
+          .then(fixture => {
+            let codeRenderer = fixture.componentInstance;
+            let el = fixture.nativeElement;
+            codeRenderer.prompt = "&";
+            spyOn(Prism, 'highlightElement');
 
-          fixture.detectChanges();
+            fixture.detectChanges();
 
-          codeRenderer.render();
+            codeRenderer.render();
 
-          expect(el.querySelector('pre').getAttribute('data-prompt')).toBe('&');
-          done();
-        })
-        .catch(e => done.fail(e));
+            expect(el.querySelector('pre')
+              .getAttribute('data-prompt'))
+              .toBe('&');
+            done();
+          })
+          .catch(e => done.fail(e));
       });
 
       it('sets the outputLines as a data attribute', done => {
-        tcb.createAsync(CodeRenderer).then(fixture => {
-          let codeRenderer = fixture.componentInstance;
-          let el = fixture.nativeElement;
-          codeRenderer.outputLines = "1-3,4";
-          spyOn(Prism, 'highlightElement');
+        tcb.createAsync(CodeRendererComponent)
+          .then(fixture => {
+            let codeRenderer = fixture.componentInstance;
+            let el = fixture.nativeElement;
+            codeRenderer.outputLines = "1-3,4";
+            spyOn(Prism, 'highlightElement');
 
-          fixture.detectChanges();
+            fixture.detectChanges();
 
-          codeRenderer.render();
+            codeRenderer.render();
 
-          expect(el.querySelector('pre').getAttribute('data-output')).toBe('1-3,4');
-          done();
-        })
-        .catch(e => done.fail(e));
+            expect(el.querySelector('pre')
+              .getAttribute('data-output'))
+              .toBe('1-3,4');
+            done();
+          })
+          .catch(e => done.fail(e));
       });
 
     });
@@ -345,24 +367,28 @@ export function main() {
       describe("Language", () => {
 
         it('is set if input is present', done => {
-          tcb.createAsync(CodeRenderer).then(fixture => {
-            let codeRenderer = fixture.componentInstance;
-            codeRenderer.language = 'javascript';
+          tcb.createAsync(CodeRendererComponent)
+            .then(fixture => {
+              let codeRenderer = fixture.componentInstance;
+              codeRenderer.language = 'javascript';
 
-            expect(codeRenderer.languageClass).toBe('language-javascript');
-            done();
-          })
-          .catch(e => done.fail(e));
+              expect(codeRenderer.languageClass)
+                .toBe('language-javascript');
+              done();
+            })
+            .catch(e => done.fail(e));
         });
 
         it('is undefined if input is missing', done => {
-          tcb.createAsync(CodeRenderer).then(fixture => {
-            let codeRenderer = fixture.componentInstance;
+          tcb.createAsync(CodeRendererComponent)
+            .then(fixture => {
+              let codeRenderer = fixture.componentInstance;
 
-            expect(codeRenderer.languageClass).toBe('language-undefined');
-            done();
-          })
-          .catch(e => done.fail(e));
+              expect(codeRenderer.languageClass)
+                .toBe('language-undefined');
+              done();
+            })
+            .catch(e => done.fail(e));
         });
 
       });
@@ -370,25 +396,29 @@ export function main() {
       describe("Line Numbers", () => {
 
         it('is set if input is present', done => {
-          tcb.createAsync(CodeRenderer).then(fixture => {
-            let codeRenderer = fixture.componentInstance;
-            codeRenderer.lineNumbers = true;
+          tcb.createAsync(CodeRendererComponent)
+            .then(fixture => {
+              let codeRenderer = fixture.componentInstance;
+              codeRenderer.lineNumbers = true;
 
-            expect(codeRenderer.lineNumbersClass).toBe('line-numbers');
-            done();
-          })
-          .catch(e => done.fail(e));
+              expect(codeRenderer.lineNumbersClass)
+                .toBe('line-numbers');
+              done();
+            })
+            .catch(e => done.fail(e));
         });
 
         it('is not set if input is missing', done => {
-          tcb.createAsync(CodeRenderer).then(fixture => {
-            let codeRenderer = fixture.componentInstance;
-            codeRenderer.lineNumbers = false;
+          tcb.createAsync(CodeRendererComponent)
+            .then(fixture => {
+              let codeRenderer = fixture.componentInstance;
+              codeRenderer.lineNumbers = false;
 
-            expect(codeRenderer.lineNumbersClass).toBe('');
-            done();
-          })
-          .catch(e => done.fail(e));
+              expect(codeRenderer.lineNumbersClass)
+                .toBe('');
+              done();
+            })
+            .catch(e => done.fail(e));
         });
 
       });
@@ -396,24 +426,28 @@ export function main() {
       describe("Shell", () => {
 
         it('is set if input is present', done => {
-          tcb.createAsync(CodeRenderer).then(fixture => {
-            let codeRenderer = fixture.componentInstance;
-            codeRenderer.shell = 'bash';
+          tcb.createAsync(CodeRendererComponent)
+            .then(fixture => {
+              let codeRenderer = fixture.componentInstance;
+              codeRenderer.shell = 'bash';
 
-            expect(codeRenderer.shellClass).toBe('command-line');
-            done();
-          })
-          .catch(e => done.fail(e));
+              expect(codeRenderer.shellClass)
+                .toBe('command-line');
+              done();
+            })
+            .catch(e => done.fail(e));
         });
 
         it('is not set if input is missing', done => {
-          tcb.createAsync(CodeRenderer).then(fixture => {
-            let codeRenderer = fixture.componentInstance;
+          tcb.createAsync(CodeRendererComponent)
+            .then(fixture => {
+              let codeRenderer = fixture.componentInstance;
 
-            expect(codeRenderer.shellClass).toBe('');
-            done();
-          })
-          .catch(e => done.fail(e));
+              expect(codeRenderer.shellClass)
+                .toBe('');
+              done();
+            })
+            .catch(e => done.fail(e));
         });
 
       });
@@ -421,14 +455,16 @@ export function main() {
       describe("Code", () => {
 
         it('are set', done => {
-          tcb.createAsync(CodeRenderer).then(fixture => {
-            let codeRenderer = fixture.componentInstance;
-            codeRenderer.language = 'javascript';
+          tcb.createAsync(CodeRendererComponent)
+            .then(fixture => {
+              let codeRenderer = fixture.componentInstance;
+              codeRenderer.language = 'javascript';
 
-            expect(codeRenderer.codeClasses).toBe('language-javascript javascript');
-            done();
-          })
-          .catch(e => done.fail(e));
+              expect(codeRenderer.codeClasses)
+                .toBe('language-javascript javascript');
+              done();
+            })
+            .catch(e => done.fail(e));
         });
 
       });
@@ -436,16 +472,18 @@ export function main() {
       describe("Pre", () => {
 
         it('are set', done => {
-          tcb.createAsync(CodeRenderer).then(fixture => {
-            let codeRenderer = fixture.componentInstance;
-            codeRenderer.lineNumbers = true;
-            codeRenderer.language = 'javascript';
-            codeRenderer.shell = 'bash';
+          tcb.createAsync(CodeRendererComponent)
+            .then(fixture => {
+              let codeRenderer = fixture.componentInstance;
+              codeRenderer.lineNumbers = true;
+              codeRenderer.language = 'javascript';
+              codeRenderer.shell = 'bash';
 
-            expect(codeRenderer.preClasses).toBe('line-numbers language-javascript command-line');
-            done();
-          })
-          .catch(e => done.fail(e));
+              expect(codeRenderer.preClasses)
+                .toBe('line-numbers language-javascript command-line');
+              done();
+            })
+            .catch(e => done.fail(e));
         });
 
       });
