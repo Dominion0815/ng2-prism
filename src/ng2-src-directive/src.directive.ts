@@ -1,6 +1,6 @@
 import { Directive, ElementRef, Inject, Input, OnInit, OnDestroy, Optional, Renderer } from '@angular/core';
 import { Http, Response } from '@angular/http';
-import { Sourcable } from './sourcable';
+// import { Sourcable } from './sourcable';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/observable/empty';
@@ -19,7 +19,8 @@ export const SourceDebounceTime: number = 300;
 @Directive({selector: '[src]'})
 export class SrcDirective implements OnInit, OnDestroy {
 
-  public host: Sourcable;
+  // public host: Sourcable;
+  public host: any;
 
   @Input()
   public set src(source: string) {
@@ -65,7 +66,8 @@ export class SrcDirective implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): any {
-    this.host = this._element as Sourcable;
+    // this.host = this._element as Sourcable;
+    this.host = this._element as any;
     if (this.host as any === this) {
       this.host = this._element;
     }
