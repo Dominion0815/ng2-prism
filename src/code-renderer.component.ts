@@ -58,7 +58,7 @@ export class CodeRendererComponent {
   /**
    * The template <pre> that will contain the code.
    */
-  @ViewChild('preEl') private _pre: any;
+  @ViewChild('preEl') _pre: any;
 
   private _renderer: Renderer;
 
