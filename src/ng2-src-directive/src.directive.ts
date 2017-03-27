@@ -1,6 +1,8 @@
-import { Directive, ElementRef, Inject, Input, OnInit, OnDestroy, Optional, Renderer } from '@angular/core';
+import {
+  Directive, ElementRef, Inject, Input, OnInit, OnDestroy, Optional, Renderer
+} from '@angular/core';
 import { Http, Response } from '@angular/http';
-import { Sourcable } from './sourcable';
+// import { Sourcable } from './sourcable';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/observable/empty';
@@ -13,13 +15,15 @@ import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/retry';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/switchMap';
+import { Subscription } from 'rxjs';
 
 export const SourceDebounceTime: number = 300;
 
 @Directive({selector: '[src]'})
 export class SrcDirective implements OnInit, OnDestroy {
 
-  public host: Sourcable;
+  // public host: Sourcable;
+  public host: any;
 
   @Input()
   public set src(source: string) {
@@ -28,7 +32,8 @@ export class SrcDirective implements OnInit, OnDestroy {
   }
 
   /**
-   * Set the amount of time in ms to wait before processing changes to the src input.
+   * Set the amount of time in ms to wait before processing changes to the src
+   * input.
    *
    * This can prevent unnecessary http requests. The default is 300ms.
    */
@@ -44,10 +49,10 @@ export class SrcDirective implements OnInit, OnDestroy {
     return this._debounceTime;
   }
 
-  public sourceChanged: Subject<string> = new Subject();
+  public sourceChanged: Subject<string> = new Subject<string>();
 
   private _debounceTime: number = 300;
-  private _subscription: any;
+  private _subscription: Subscription;
   private _firstRequest: boolean = true;
 
   private _src: string;
@@ -65,7 +70,8 @@ export class SrcDirective implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): any {
-    this.host = this._element as Sourcable;
+    // this.host = this._element as Sourcable;
+    this.host = this._element as any;
     if (this.host as any === this) {
       this.host = this._element;
     }
@@ -81,7 +87,9 @@ export class SrcDirective implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): any {
-    this._subscription.dispose();
+    if (this._subscription) {
+      this._subscription.unsubscribe();
+    }
   }
 
   private _handleSourceChanges(): any {
@@ -106,7 +114,9 @@ export class SrcDirective implements OnInit, OnDestroy {
           this.host.sourceLoading(req.source);
         }
       })
-      .debounce(() => Observable.timer(this._firstRequest ? 0 : this.debounceTime))
+      .debounce(() => Observable.timer(this._firstRequest
+        ? 0
+        : this.debounceTime))
       .do(() => this._firstRequest = false)
       .switchMap((req: any) => {
         return this._fetchSrc(req);

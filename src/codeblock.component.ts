@@ -4,7 +4,8 @@ import {
   ViewEncapsulation, ViewChild
 } from '@angular/core';
 import { CodeRendererComponent } from './code-renderer.component';
-import { OnSourceChanged, OnSourceError, OnSourceReceived, Response } from './ng2-src-directive/sourcable';
+// import { OnSourceChanged, OnSourceError, OnSourceReceived } from './ng2-src-directive/sourcable';
+import { Response } from '@angular/http';
 
 @Component({
   selector: 'codeblock',
@@ -26,10 +27,11 @@ import { OnSourceChanged, OnSourceError, OnSourceReceived, Response } from './ng
   encapsulation: ViewEncapsulation.None
 })
 export class CodeblockComponent implements AfterViewChecked,
-  AfterContentChecked,
-  OnSourceChanged,
-  OnSourceError,
-  OnSourceReceived {
+  AfterContentChecked
+  // OnSourceChanged,
+  // OnSourceError,
+  // OnSourceReceived
+{
 
   /**
    * Map of file extensions to highlighting languages

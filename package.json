@@ -1,12 +1,12 @@
 {
   "name": "ng2-prism-base",
   "private": true,
-  "version": "2.3.3",
+  "version": "2.3.2-4",
   "description": "An Angular2 codeblock highlighting component using Prismjs.",
   "scripts": {
     "build:lang": "node ./tasks/build-language-directives.js",
-    "build:lib": "ngm build -p src",
-    "build": "run-s build:lang build:lib",
+    "build:lib": "ngm build -p src --clean",
+    "build": "run-s build:lib",
     "build.watch": "ngm build -p src --watch --skip-bundles",
     "link": "ngm link -p src --here",
     "lint": "tslint \"**/*.ts\" -c tslint.json --fix --type-check -t prose -e \"node_modules/**\" -e \"dist/**\" -e \"temp/**\" -e \"scripts/docs/**\"",
